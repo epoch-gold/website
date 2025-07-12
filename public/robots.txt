@@ -1,0 +1,8 @@
+# robots.txt for EpochGold
+User-agent: *
+
+# Allow public pages
+Allow: /
+
+# Point to sitemap
+Sitemap: https://www.epochgold.com/sitemap.xml
