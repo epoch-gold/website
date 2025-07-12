@@ -5,9 +5,13 @@ import store from './store';
 import './index.css';
 import axios from 'axios';
 
+const api = axios.create({
+  baseURL: import.meta.env.PROD ? import.meta.env.VITE_API_URL : '/api',
+});
+
 const app = createApp(App);
 
-app.config.globalProperties.$axios = axios;
+app.config.globalProperties.$axios = api;
 
 app.use(store);
 app.use(router);
