@@ -5,10 +5,6 @@
         class="w-full p-3 bg-epoch-gray-800 text-white border-2 border-epoch-gray-700 rounded-lg focus:outline-none focus:border-epoch-gold transition-colors" />
     </div>
 
-    <div v-if="loading" class="text-center text-epoch-gold">
-      <div class="lds-dual-ring"></div>
-      <p>Loading...</p>
-    </div>
     <div v-if="error" class="text-red-500 text-center">{{ error }}</div>
 
     <div v-if="!loading && !error" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -57,7 +53,7 @@ export default {
   data() {
     return {
       items: [],
-      loading: true,
+      loading: false,
       error: null,
       searchQuery: '',
       currentPage: 1,
@@ -131,8 +127,6 @@ export default {
     } catch (err) {
       this.error = 'Failed to load items. Please try again later.';
       console.error(err);
-    } finally {
-      this.loading = false;
     }
   },
   watch: {
@@ -147,32 +141,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.lds-dual-ring {
-  display: inline-block;
-  width: 80px;
-  height: 80px;
-}
-
-.lds-dual-ring:after {
-  content: " ";
-  display: block;
-  width: 64px;
-  height: 64px;
-  margin: 8px;
-  border-radius: 50%;
-  border: 6px solid #ffd700;
-  border-color: #ffd700 transparent #ffd700 transparent;
-  animation: lds-dual-ring 1.2s linear infinite;
-}
-
-@keyframes lds-dual-ring {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
-}
-</style>
+<style scoped></style>

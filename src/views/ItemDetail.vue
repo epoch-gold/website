@@ -7,7 +7,6 @@
         Back
       </button>
     </div>
-    <div v-if="loading" class="text-center text-epoch-gold">Loading...</div>
     <div v-if="error" class="text-red-500 text-center">{{ error }}</div>
     <div v-if="!loading && !error && item" class="text-white">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -78,7 +77,7 @@ export default {
       item: null,
       auctions: [],
       historicalData: [],
-      loading: true,
+      loading: false,
       error: null,
       currentPage: 1,
       itemsPerPage: 10,
@@ -153,8 +152,6 @@ export default {
     } catch (err) {
       this.error = 'Failed to load item details. Please try again later.';
       console.error(err);
-    } finally {
-      this.loading = false;
     }
   },
 };
