@@ -1,23 +1,20 @@
 <template>
-  <div class="flex flex-col w-full mx-auto min-h-screen">
+  <div class="flex flex-col w-full mx-auto min-h-screen bg-epoch-gray-900">
     <Header />
-    <main class="flex-grow w-3/4 mx-auto min-h-[90vh]">
+    <main class="flex-grow w-full max-w-7xl mx-auto">
       <router-view />
     </main>
-    <Footer />
   </div>
 </template>
 
 <script>
 import { defineComponent } from 'vue';
 import Header from './components/Header.vue';
-import Footer from './components/Footer.vue';
 
 export default defineComponent({
   name: 'App',
   components: {
     Header,
-    Footer,
   },
 });
 </script>

@@ -47,8 +47,8 @@ export default {
                 datasets: [
                     {
                         label: 'Market Price',
-                        backgroundColor: '#42A5F5',
-                        borderColor: '#42A5F5',
+                        backgroundColor: '#ffd700',
+                        borderColor: '#ffd700',
                         data: marketPrices,
                         fill: false,
                         tension: 0.4,
@@ -65,13 +65,17 @@ export default {
                         grid: {
                             display: false,
                         },
+                        ticks: {
+                            color: 'white',
+                        },
                     },
                     y: {
                         beginAtZero: false,
                         ticks: {
                             callback: function (value) {
                                 return formatPrice(value);
-                            }
+                            },
+                            color: 'white',
                         }
                     },
                 },

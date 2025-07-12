@@ -1,18 +1,21 @@
 <template>
-  <div class="p-4 mt-4">
-    <div class="mb-4">
-      <input type="text" v-model="searchQuery" placeholder="Search for items..." class="w-full p-2 border rounded-lg" />
+  <div class="p-8">
+    <div class="mb-8">
+      <input type="text" v-model="searchQuery" placeholder="Search for items..."
+        class="w-full p-3 bg-epoch-gray-800 text-white border-2 border-epoch-gray-700 rounded-lg focus:outline-none focus:border-epoch-gold transition-colors" />
     </div>
 
-    <div v-if="loading" class="text-center">Loading...</div>
+    <div v-if="loading" class="text-center text-epoch-gold">
+      <div class="lds-dual-ring"></div>
+      <p>Loading...</p>
+    </div>
     <div v-if="error" class="text-red-500 text-center">{{ error }}</div>
 
-    <div v-if="!loading && !error"
-      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div v-if="!loading && !error" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       <router-link v-for="item in paginatedItems" :key="item.id" :to="`/item/${item.id}`"
-        class="border p-4 rounded-lg hover:bg-gray-100 transition-colors">
-        <div class="font-semibold">{{ item.name }}</div>
-        <div class="text-sm text-gray-600 mt-2 flex items-center">
+        class="bg-epoch-gray-800 p-4 rounded-lg hover:bg-epoch-gray-700 transform hover:-translate-y-1 transition-all shadow-md hover:shadow-xl">
+        <div class="font-semibold text-epoch-gold">{{ item.name }}</div>
+        <div class="text-sm text-epoch-gray-400 mt-2 flex items-center">
           <div v-if="minimumBuyouts[item.id]">
             <div v-if="minimumBuyouts[item.id] === 'N/A'" class="text-gray-500">
               No auctions found
@@ -31,12 +34,12 @@
 
     <div class="flex justify-center items-center mt-8" v-if="!loading && !error && filteredItems.length > 0">
       <button @click="prevPage" :disabled="currentPage === 1"
-        class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l">
+        class="bg-epoch-gray-700 hover:bg-epoch-gold text-white font-bold py-2 px-4 rounded-l disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
         Prev
       </button>
-      <span class="py-2 px-4">Page {{ currentPage }} of {{ totalPages }}</span>
+      <span class="py-2 px-4 bg-epoch-gray-800 text-white">Page {{ currentPage }} of {{ totalPages }}</span>
       <button @click="nextPage" :disabled="currentPage === totalPages"
-        class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r">
+        class="bg-epoch-gray-700 hover:bg-epoch-gold text-white font-bold py-2 px-4 rounded-r disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
         Next
       </button>
     </div>
@@ -143,3 +146,33 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.lds-dual-ring {
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+}
+
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border-radius: 50%;
+  border: 6px solid #ffd700;
+  border-color: #ffd700 transparent #ffd700 transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+</style>
