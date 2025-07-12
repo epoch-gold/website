@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4">
+  <div class="p-4 mt-4">
     <div class="mb-4">
       <input type="text" v-model="searchQuery" placeholder="Search for items..." class="w-full p-2 border rounded-lg" />
     </div>
@@ -29,7 +29,7 @@
       </router-link>
     </div>
 
-    <div class="flex justify-center items-center mt-4" v-if="!loading && !error && filteredItems.length > 0">
+    <div class="flex justify-center items-center mt-8" v-if="!loading && !error && filteredItems.length > 0">
       <button @click="prevPage" :disabled="currentPage === 1"
         class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l">
         Prev
