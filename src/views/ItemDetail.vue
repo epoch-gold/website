@@ -76,9 +76,9 @@ export default {
   async created() {
     try {
       const [itemsResponse, auctionsResponse, historicalDataResponse] = await Promise.all([
-        this.$axios.get(`/api/items`),
-        this.$axios.get(`/api/items/${this.id}/auctions`),
-        this.$axios.get(`/api/items/${this.id}/data`),
+        this.$axios.get(`/items`),
+        this.$axios.get(`/items/${this.id}/auctions`),
+        this.$axios.get(`/items/${this.id}/data`),
       ]);
       
       this.item = itemsResponse.data.find(i => i.id === parseInt(this.id));

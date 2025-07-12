@@ -89,7 +89,7 @@ export default {
       if (itemsToFetch.length === 0) return;
 
       const pricePromises = itemsToFetch.map(item =>
-        this.$axios.get(`/api/items/${item.id}/data`)
+        this.$axios.get(`/items/${item.id}/data`)
           .then(response => ({
             id: item.id,
             price: response.data.length > 0 ? parseFloat(response.data[0].market_price) : 'N/A',
@@ -108,7 +108,7 @@ export default {
   },
   async created() {
     try {
-      const response = await this.$axios.get('/api/items');
+      const response = await this.$axios.get('/items');
       this.items = response.data;
       this.fetchMarketPrices(); 
     } catch (err) {
