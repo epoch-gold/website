@@ -15,16 +15,13 @@
           <div>
             <div class="font-semibold text-epoch-gold">{{ item.name }}</div>
             <div class="text-sm text-epoch-gray-400 mt-2 flex items-center">
-              <div v-if="minimumBuyouts[item.id]">
-                <div v-if="minimumBuyouts[item.id] === 'N/A'" class="text-gray-500">
-                  No auctions found
-                </div>
-                <div v-else class="flex flex-col xl:flex-row items-start xl:items-center">
-                  <Price :price="minimumBuyouts[item.id]" class="mr-0 sm:mr-2" />
+              <div v-if="item.price !== null">
+                <div class="flex flex-col xl:flex-row items-start xl:items-center">
+                  <Price :price="Number(item.price)" class="mr-0 sm:mr-2" />
                 </div>
               </div>
-              <div v-else>
-                Loading...
+              <div v-else class="text-gray-500">
+                No auctions found
               </div>
             </div>
           </div>
@@ -64,7 +61,6 @@ export default {
       itemsPerPage: 15,
       totalPages: 1,
       totalItems: 0,
-      minimumBuyouts: {},
     };
   },
   computed: {
@@ -80,16 +76,15 @@ export default {
           page: this.currentPage.toString(),
           limit: this.itemsPerPage.toString()
         });
-        
+
         if (this.searchQuery) {
           params.append('search', this.searchQuery);
         }
-        
+
         const response = await this.$axios.get(`/items?${params}`);
         this.items = response.data.items;
         this.totalPages = response.data.pagination.totalPages;
         this.totalItems = response.data.pagination.totalItems;
-        this.fetchMinimumBuyouts();
       } catch (err) {
         this.error = 'Failed to load items. Please try again later.';
         console.error(err);
@@ -108,34 +103,6 @@ export default {
         this.currentPage--;
         this.loadItems();
       }
-    },
-    async fetchMinimumBuyouts() {
-      const itemsToFetch = this.items.filter(item => !this.minimumBuyouts[item.id]);
-      if (itemsToFetch.length === 0) return;
-
-      const pricePromises = itemsToFetch.map(item =>
-        this.$axios.get(`/items/${item.id}/auctions`)
-          .then(response => {
-            const auctions = response.data;
-            if (auctions.length > 0) {
-              const minPrice = Math.min(...auctions.map(a => a.price / a.quantity));
-              return { id: item.id, price: minPrice };
-            }
-            return { id: item.id, price: 'N/A' };
-          })
-          .catch(err => {
-            if (err.response && err.response.status === 404) {
-              return { id: item.id, price: 'N/A' };
-            }
-            console.error(`Failed to load minimum buyout for item ${item.id}`, err);
-            return { id: item.id, price: 'Error' };
-          })
-      );
-
-      const results = await Promise.all(pricePromises);
-      results.forEach(result => {
-        this.minimumBuyouts[result.id] = result.price;
-      });
     },
   },
   async created() {
