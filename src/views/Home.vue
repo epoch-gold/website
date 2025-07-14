@@ -103,7 +103,7 @@ export default {
           .then(response => {
             const auctions = response.data;
             if (auctions.length > 0) {
-              const minPrice = Math.min(...auctions.map(a => a.price));
+              const minPrice = Math.min(...auctions.map(a => a.price / a.quantity));
               return { id: item.id, price: minPrice };
             }
             return { id: item.id, price: 'N/A' };
