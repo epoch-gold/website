@@ -4,8 +4,6 @@
 
     <LoadingSpinner v-if="loading" text="Loading item details..." />
 
-    <ErrorMessage v-else-if="error" :message="error" />
-
     <div v-else-if="item" class="text-white">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
         <AuctionTable :auctions="auctions" :current-page="currentPage" :items-per-page="itemsPerPage"
@@ -22,7 +20,6 @@ import ItemHeader from '../components/ItemHeader.vue';
 import AuctionTable from '../components/AuctionTable.vue';
 import HistoricalDataSection from '../components/HistoricalDataSection.vue';
 import LoadingSpinner from '../components/LoadingSpinner.vue';
-import ErrorMessage from '../components/ErrorMessage.vue';
 
 export default {
   name: 'ItemDetail',
@@ -31,7 +28,6 @@ export default {
     AuctionTable,
     HistoricalDataSection,
     LoadingSpinner,
-    ErrorMessage,
   },
   props: ['id'],
   data() {
@@ -40,7 +36,6 @@ export default {
       auctions: [],
       historicalData: [],
       loading: true,
-      error: null,
       currentPage: 1,
       itemsPerPage: 10,
       sortKey: 'unit_price',
@@ -74,7 +69,6 @@ export default {
   },
   async created() {
     this.loading = true;
-    this.error = null;
 
     try {
       const [itemResponse, auctionsResponse, historicalDataResponse] = await Promise.all([
@@ -89,7 +83,6 @@ export default {
       this.historicalData = historicalDataResponse.data;
 
     } catch (err) {
-      this.error = 'Failed to load item details. Please try again later.';
       console.error(err);
     } finally {
       this.loading = false;

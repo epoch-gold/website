@@ -4,8 +4,6 @@
 
     <LoadingSpinner v-if="loading" text="Loading items..." />
 
-    <ErrorMessage v-else-if="error" :message="error" />
-
     <template v-else>
       <ItemGrid :items="displayedItems" />
 
@@ -20,7 +18,6 @@ import SearchBar from '../components/SearchBar.vue';
 import ItemGrid from '../components/ItemGrid.vue';
 import Pagination from '../components/Pagination.vue';
 import LoadingSpinner from '../components/LoadingSpinner.vue';
-import ErrorMessage from '../components/ErrorMessage.vue';
 
 export default {
   name: 'Home',
@@ -29,13 +26,11 @@ export default {
     ItemGrid,
     Pagination,
     LoadingSpinner,
-    ErrorMessage,
   },
   data() {
     return {
       items: [],
       loading: true,
-      error: null,
       searchQuery: '',
       currentPage: 1,
       itemsPerPage: 15,
@@ -52,7 +47,6 @@ export default {
     async loadItems() {
       try {
         this.loading = true;
-        this.error = null;
 
         const params = new URLSearchParams({
           page: this.currentPage.toString(),
@@ -72,7 +66,6 @@ export default {
         this.totalPages = response.data.pagination.totalPages;
         this.totalItems = response.data.pagination.totalItems;
       } catch (err) {
-        this.error = 'Failed to load items. Please try again later.';
         console.error(err);
       } finally {
         this.loading = false;
