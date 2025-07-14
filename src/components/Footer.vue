@@ -1,7 +1,7 @@
 <template>
     <footer
         class="bg-epoch-gray-900 text-white py-4 px-10 flex justify-center items-center shadow-lg relative max-w-7xl mx-auto w-full md:hidden">
-        <div class="flex items-center gap-4">
+        <div class="flex flex-col sm:flex-row items-center gap-4">
             <a href="https://github.com/epoch-gold" target="_blank" rel="noopener noreferrer"
                 class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 flex items-center gap-2 text-sm">
                 <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -12,7 +12,6 @@
             </a>
 
             <a href="https://www.patreon.com/bePatron?u=4966471" target="_blank" rel="noopener noreferrer"
-                data-patreon-widget-type="become-patron-button"
                 class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 flex items-center gap-2 text-sm">
                 <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path

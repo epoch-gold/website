@@ -1,6 +1,6 @@
 <template>
   <header
-    class="bg-epoch-gray-900 text-white py-4 px-10 flex justify-center md:justify-between items-center shadow-lg relative max-w-7xl mx-auto w-full">
+    class="bg-epoch-gray-900 text-white py-4 px-10 flex justify-center md:justify-between items-center relative max-w-7xl mx-auto w-full">
     <router-link to="/" class="text-3xl font-bold tracking-wider text-epoch-gold hover:opacity-90 transition-opacity">
       EpochGold
     </router-link>
@@ -16,7 +16,6 @@
       </a>
 
       <a href="https://www.patreon.com/bePatron?u=4966471" target="_blank" rel="noopener noreferrer"
-        data-patreon-widget-type="become-patron-button"
         class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 flex items-center gap-2 text-sm">
         <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path
