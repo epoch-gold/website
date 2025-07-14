@@ -2,7 +2,7 @@
   <div class="p-8">
     <div class="flex justify-between items-center mb-6">
       <div class="flex items-center">
-        <img v-if="item" :src="`/icons/${item.icon}.png`" :alt="item.name" class="h-12 w-12 mr-4" />
+        <img v-if="item" :src="`/icons/${item.icon.toLowerCase()}.png`" :alt="item.name" class="h-12 w-12 mr-4" />
         <h1 v-if="item" class="text-2xl sm:text-4xl font-bold text-epoch-gold">{{ item.name }}</h1>
       </div>
       <button @click="goBack"

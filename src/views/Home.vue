@@ -11,7 +11,7 @@
       <router-link v-for="item in paginatedItems" :key="item.id" :to="`/item/${item.id}`"
         class="bg-epoch-gray-800 p-4 rounded-lg hover:bg-epoch-gray-700 transform hover:-translate-y-1 transition-all shadow-md hover:shadow-xl">
         <div class="flex items-center">
-          <img :src="`/icons/${item.icon}.png`" :alt="item.name" class="h-8 w-8 mr-4" />
+          <img :src="`/icons/${item.icon.toLowerCase()}.png`" :alt="item.name" class="h-8 w-8 mr-4" />
           <div>
             <div class="font-semibold text-epoch-gold">{{ item.name }}</div>
             <div class="text-sm text-epoch-gray-400 mt-2 flex items-center">
