@@ -1,7 +1,10 @@
 <template>
   <div class="p-8">
     <div class="flex justify-between items-center mb-6">
-      <h1 v-if="item" class="text-2xl sm:text-4xl font-bold text-epoch-gold">{{ item.name }}</h1>
+      <div class="flex items-center">
+        <img v-if="item" :src="`/icons/${item.icon}.png`" :alt="item.name" class="h-12 w-12 mr-4" />
+        <h1 v-if="item" class="text-2xl sm:text-4xl font-bold text-epoch-gold">{{ item.name }}</h1>
+      </div>
       <button @click="goBack"
         class="bg-epoch-gray-700 hover:bg-epoch-gold text-white font-bold py-2 px-4 rounded transition-colors">
         Back
@@ -138,11 +141,16 @@ export default {
     },
   },
   async created() {
+    this.loading = true;
     try {
       const [itemsResponse, auctionsResponse, historicalDataResponse] = await Promise.all([
         this.$axios.get(`/items`),
-        this.$axios.get(`/items/${this.id}/auctions`),
-        this.$axios.get(`/items/${this.id}/data`),
+        this.id ? this.$axios.get(`/items/${this.id}/auctions`) : Promise.resolve({
+          data: []
+        }),
+        this.id ? this.$axios.get(`/items/${this.id}/data`) : Promise.resolve({
+          data: []
+        }),
       ]);
 
       this.item = itemsResponse.data.find(i => i.id === parseInt(this.id));
@@ -152,6 +160,8 @@ export default {
     } catch (err) {
       this.error = 'Failed to load item details. Please try again later.';
       console.error(err);
+    } finally {
+      this.loading = false;
     }
   },
 };

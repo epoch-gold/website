@@ -10,19 +10,23 @@
     <div v-if="!loading && !error" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       <router-link v-for="item in paginatedItems" :key="item.id" :to="`/item/${item.id}`"
         class="bg-epoch-gray-800 p-4 rounded-lg hover:bg-epoch-gray-700 transform hover:-translate-y-1 transition-all shadow-md hover:shadow-xl">
-        <div class="font-semibold text-epoch-gold">{{ item.name }}</div>
-        <div class="text-sm text-epoch-gray-400 mt-2 flex items-center">
-          <div v-if="minimumBuyouts[item.id]">
-            <div v-if="minimumBuyouts[item.id] === 'N/A'" class="text-gray-500">
-              No auctions found
+        <div class="flex items-center">
+          <img :src="`/icons/${item.icon}.png`" :alt="item.name" class="h-8 w-8 mr-4" />
+          <div>
+            <div class="font-semibold text-epoch-gold">{{ item.name }}</div>
+            <div class="text-sm text-epoch-gray-400 mt-2 flex items-center">
+              <div v-if="minimumBuyouts[item.id]">
+                <div v-if="minimumBuyouts[item.id] === 'N/A'" class="text-gray-500">
+                  No auctions found
+                </div>
+                <div v-else class="flex flex-col xl:flex-row items-start xl:items-center">
+                  <Price :price="minimumBuyouts[item.id]" class="mr-0 sm:mr-2" />
+                </div>
+              </div>
+              <div v-else>
+                Loading...
+              </div>
             </div>
-            <div v-else class="flex flex-col xl:flex-row items-start xl:items-center">
-              <span class="mr-0 sm:mr-2">Min Buyout:</span>
-              <Price :price="minimumBuyouts[item.id]" class="mr-0 sm:mr-2" />
-            </div>
-          </div>
-          <div v-else>
-            Loading...
           </div>
         </div>
       </router-link>
@@ -121,12 +125,15 @@ export default {
   },
   async created() {
     try {
+      this.loading = true;
       const response = await this.$axios.get('/items');
       this.items = response.data;
       this.fetchMinimumBuyouts();
     } catch (err) {
       this.error = 'Failed to load items. Please try again later.';
       console.error(err);
+    } finally {
+      this.loading = false;
     }
   },
   watch: {
