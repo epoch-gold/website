@@ -7,7 +7,7 @@
 
     <div v-if="error" class="text-red-500 text-center">{{ error }}</div>
 
-    <div v-if="!loading && !error" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div v-if="!loading && !error" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
       <router-link v-for="item in paginatedItems" :key="item.id" :to="`/item/${item.id}`"
         class="bg-epoch-gray-800 p-4 rounded-lg hover:bg-epoch-gray-700 transform hover:-translate-y-1 transition-all shadow-md hover:shadow-xl">
         <div class="flex items-center">
@@ -61,7 +61,7 @@ export default {
       error: null,
       searchQuery: '',
       currentPage: 1,
-      itemsPerPage: 20,
+      itemsPerPage: 15,
       minimumBuyouts: {},
     };
   },
