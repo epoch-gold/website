@@ -44,6 +44,39 @@ export default {
   },
   computed: {
   },
+  watch: {
+    id: {
+      immediate: true,
+      async handler(newId) {
+        if (newId) {
+          document.title = 'Loading... - EpochGold';
+
+          this.loading = true;
+          try {
+            const [itemResponse, auctionsResponse, historicalDataResponse] = await Promise.all([
+              this.$axios.get(`/items/${newId}`),
+              this.$axios.get(`/items/${newId}/auctions`),
+              this.$axios.get(`/items/${newId}/data`),
+              new Promise(resolve => setTimeout(resolve, 150))
+            ]);
+
+            this.item = itemResponse.data;
+            this.auctions = auctionsResponse.data;
+            this.historicalData = historicalDataResponse.data;
+
+            if (this.item && this.item.name) {
+              document.title = `${this.item.name} - EpochGold`;
+            }
+          } catch (err) {
+            console.error(err);
+            document.title = 'Item Not Found - EpochGold';
+          } finally {
+            this.loading = false;
+          }
+        }
+      }
+    }
+  },
   methods: {
     goBack() {
       this.$router.go(-1);
@@ -68,25 +101,9 @@ export default {
     },
   },
   async created() {
-    this.loading = true;
-
-    try {
-      const [itemResponse, auctionsResponse, historicalDataResponse] = await Promise.all([
-        this.id ? this.$axios.get(`/items/${this.id}`) : Promise.resolve({ data: null }),
-        this.id ? this.$axios.get(`/items/${this.id}/auctions`) : Promise.resolve({ data: [] }),
-        this.id ? this.$axios.get(`/items/${this.id}/data`) : Promise.resolve({ data: [] }),
-        new Promise(resolve => setTimeout(resolve, 150))
-      ]);
-
-      this.item = itemResponse.data;
-      this.auctions = auctionsResponse.data;
-      this.historicalData = historicalDataResponse.data;
-
-    } catch (err) {
-      console.error(err);
-    } finally {
-      this.loading = false;
-    }
+  },
+  beforeUnmount() {
+    document.title = 'EpochGold - Auctions & Market Data';
   },
 };
 </script>
