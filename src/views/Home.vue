@@ -1,55 +1,35 @@
 <template>
   <div class="p-8">
-    <div class="mb-8">
-      <input type="text" v-model="searchQuery" placeholder="Search for items..."
-        class="w-full p-3 bg-epoch-gray-800 text-white border-2 border-epoch-gray-700 rounded-lg focus:outline-none focus:border-epoch-gold transition-colors" />
-    </div>
+    <SearchBar v-model="searchQuery" placeholder="Search for items..." />
 
-    <div v-if="error" class="text-red-500 text-center">{{ error }}</div>
+    <LoadingSpinner v-if="loading" text="Loading items..." />
 
-    <div v-if="!loading && !error" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-      <router-link v-for="item in displayedItems" :key="item.id" :to="`/item/${item.id}`"
-        class="bg-epoch-gray-800 p-4 rounded-lg hover:bg-epoch-gray-700 transform hover:-translate-y-1 transition-all shadow-md hover:shadow-xl">
-        <div class="flex items-center">
-          <img :src="`/icons/${item.icon.toLowerCase()}.png`" :alt="item.name" class="h-8 w-8 mr-4" />
-          <div>
-            <div class="font-semibold text-epoch-gold">{{ item.name }}</div>
-            <div class="text-sm text-epoch-gray-400 mt-2 flex items-center">
-              <div v-if="item.price !== null">
-                <div class="flex flex-col xl:flex-row items-start xl:items-center">
-                  <Price :price="Number(item.price)" class="mr-0 sm:mr-2" />
-                </div>
-              </div>
-              <div v-else class="text-gray-500">
-                No auctions found
-              </div>
-            </div>
-          </div>
-        </div>
-      </router-link>
-    </div>
+    <ErrorMessage v-else-if="error" :message="error" />
 
-    <div class="flex justify-center items-center mt-8" v-if="!loading && !error && totalItems > 0">
-      <button @click="prevPage" :disabled="currentPage === 1"
-        class="bg-epoch-gray-700 hover:bg-epoch-gold text-white font-bold py-2 px-4 rounded-l disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-        Prev
-      </button>
-      <span class="py-2 px-4 bg-epoch-gray-800 text-white">Page {{ currentPage }} of {{ totalPages }}</span>
-      <button @click="nextPage" :disabled="currentPage === totalPages"
-        class="bg-epoch-gray-700 hover:bg-epoch-gold text-white font-bold py-2 px-4 rounded-r disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-        Next
-      </button>
-    </div>
+    <template v-else>
+      <ItemGrid :items="displayedItems" />
+
+      <Pagination v-if="totalItems > 0" :current-page="currentPage" :total-pages="totalPages" @prev-page="prevPage"
+        @next-page="nextPage" />
+    </template>
   </div>
 </template>
 
 <script>
-import Price from '../components/Price.vue';
+import SearchBar from '../components/SearchBar.vue';
+import ItemGrid from '../components/ItemGrid.vue';
+import Pagination from '../components/Pagination.vue';
+import LoadingSpinner from '../components/LoadingSpinner.vue';
+import ErrorMessage from '../components/ErrorMessage.vue';
 
 export default {
   name: 'Home',
   components: {
-    Price,
+    SearchBar,
+    ItemGrid,
+    Pagination,
+    LoadingSpinner,
+    ErrorMessage,
   },
   data() {
     return {
