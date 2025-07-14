@@ -36,6 +36,7 @@ export default {
       itemsPerPage: 15,
       totalPages: 1,
       totalItems: 0,
+      searchTimeout: null,
     };
   },
   computed: {
@@ -71,6 +72,16 @@ export default {
         this.loading = false;
       }
     },
+    debouncedSearch() {
+      if (this.searchTimeout) {
+        clearTimeout(this.searchTimeout);
+      }
+
+      this.searchTimeout = setTimeout(() => {
+        this.currentPage = 1;
+        this.loadItems();
+      }, 500);
+    },
     nextPage() {
       if (this.currentPage < this.totalPages) {
         this.currentPage++;
@@ -87,10 +98,14 @@ export default {
   async created() {
     await this.loadItems();
   },
+  beforeUnmount() {
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+  },
   watch: {
     searchQuery() {
-      this.currentPage = 1;
-      this.loadItems();
+      this.debouncedSearch();
     },
   },
 };
