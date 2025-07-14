@@ -43,6 +43,13 @@ export default {
     };
   },
   computed: {
+    totalPages() {
+      const sortedAuctions = this.auctions.map(auction => ({
+        ...auction,
+        unit_price: auction.price / auction.quantity,
+      }));
+      return Math.ceil(sortedAuctions.length / this.itemsPerPage);
+    }
   },
   watch: {
     id: {
@@ -52,6 +59,7 @@ export default {
           document.title = 'Loading... - EpochGold';
 
           this.loading = true;
+          this.currentPage = 1;
           try {
             const [itemResponse, auctionsResponse, historicalDataResponse] = await Promise.all([
               this.$axios.get(`/items/${newId}`),
