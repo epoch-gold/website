@@ -143,17 +143,13 @@ export default {
   async created() {
     this.loading = true;
     try {
-      const [itemsResponse, auctionsResponse, historicalDataResponse] = await Promise.all([
-        this.$axios.get(`/items`),
-        this.id ? this.$axios.get(`/items/${this.id}/auctions`) : Promise.resolve({
-          data: []
-        }),
-        this.id ? this.$axios.get(`/items/${this.id}/data`) : Promise.resolve({
-          data: []
-        }),
+      const [itemResponse, auctionsResponse, historicalDataResponse] = await Promise.all([
+        this.id ? this.$axios.get(`/items/${this.id}`) : Promise.resolve({ data: null }),
+        this.id ? this.$axios.get(`/items/${this.id}/auctions`) : Promise.resolve({ data: [] }),
+        this.id ? this.$axios.get(`/items/${this.id}/data`) : Promise.resolve({ data: [] }),
       ]);
 
-      this.item = itemsResponse.data.find(i => i.id === parseInt(this.id));
+      this.item = itemResponse.data;
       this.auctions = auctionsResponse.data;
       this.historicalData = historicalDataResponse.data;
 

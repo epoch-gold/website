@@ -8,7 +8,7 @@
     <div v-if="error" class="text-red-500 text-center">{{ error }}</div>
 
     <div v-if="!loading && !error" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-      <router-link v-for="item in paginatedItems" :key="item.id" :to="`/item/${item.id}`"
+      <router-link v-for="item in displayedItems" :key="item.id" :to="`/item/${item.id}`"
         class="bg-epoch-gray-800 p-4 rounded-lg hover:bg-epoch-gray-700 transform hover:-translate-y-1 transition-all shadow-md hover:shadow-xl">
         <div class="flex items-center">
           <img :src="`/icons/${item.icon.toLowerCase()}.png`" :alt="item.name" class="h-8 w-8 mr-4" />
@@ -32,7 +32,7 @@
       </router-link>
     </div>
 
-    <div class="flex justify-center items-center mt-8" v-if="!loading && !error && filteredItems.length > 0">
+    <div class="flex justify-center items-center mt-8" v-if="!loading && !error && totalItems > 0">
       <button @click="prevPage" :disabled="currentPage === 1"
         class="bg-epoch-gray-700 hover:bg-epoch-gold text-white font-bold py-2 px-4 rounded-l disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
         Prev
@@ -62,40 +62,55 @@ export default {
       searchQuery: '',
       currentPage: 1,
       itemsPerPage: 15,
+      totalPages: 1,
+      totalItems: 0,
       minimumBuyouts: {},
     };
   },
   computed: {
-    filteredItems() {
-      if (!this.searchQuery) {
-        return this.items;
-      }
-      return this.items.filter(item =>
-        item.name.toLowerCase().includes(this.searchQuery.toLowerCase())
-      );
-    },
-    paginatedItems() {
-      const start = (this.currentPage - 1) * this.itemsPerPage;
-      const end = start + this.itemsPerPage;
-      return this.filteredItems.slice(start, end);
-    },
-    totalPages() {
-      return Math.ceil(this.filteredItems.length / this.itemsPerPage);
+    displayedItems() {
+      return this.items;
     },
   },
   methods: {
+    async loadItems() {
+      try {
+        this.loading = true;
+        const params = new URLSearchParams({
+          page: this.currentPage.toString(),
+          limit: this.itemsPerPage.toString()
+        });
+        
+        if (this.searchQuery) {
+          params.append('search', this.searchQuery);
+        }
+        
+        const response = await this.$axios.get(`/items?${params}`);
+        this.items = response.data.items;
+        this.totalPages = response.data.pagination.totalPages;
+        this.totalItems = response.data.pagination.totalItems;
+        this.fetchMinimumBuyouts();
+      } catch (err) {
+        this.error = 'Failed to load items. Please try again later.';
+        console.error(err);
+      } finally {
+        this.loading = false;
+      }
+    },
     nextPage() {
       if (this.currentPage < this.totalPages) {
         this.currentPage++;
+        this.loadItems();
       }
     },
     prevPage() {
       if (this.currentPage > 1) {
         this.currentPage--;
+        this.loadItems();
       }
     },
     async fetchMinimumBuyouts() {
-      const itemsToFetch = this.paginatedItems.filter(item => !this.minimumBuyouts[item.id]);
+      const itemsToFetch = this.items.filter(item => !this.minimumBuyouts[item.id]);
       if (itemsToFetch.length === 0) return;
 
       const pricePromises = itemsToFetch.map(item =>
@@ -124,25 +139,12 @@ export default {
     },
   },
   async created() {
-    try {
-      this.loading = true;
-      const response = await this.$axios.get('/items');
-      this.items = response.data;
-      this.fetchMinimumBuyouts();
-    } catch (err) {
-      this.error = 'Failed to load items. Please try again later.';
-      console.error(err);
-    } finally {
-      this.loading = false;
-    }
+    await this.loadItems();
   },
   watch: {
     searchQuery() {
       this.currentPage = 1;
-      this.fetchMinimumBuyouts();
-    },
-    currentPage() {
-      this.fetchMinimumBuyouts();
+      this.loadItems();
     },
   },
 };
