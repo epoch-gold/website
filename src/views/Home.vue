@@ -34,7 +34,7 @@ export default {
   data() {
     return {
       items: [],
-      loading: false,
+      loading: true,
       error: null,
       searchQuery: '',
       currentPage: 1,
@@ -52,6 +52,8 @@ export default {
     async loadItems() {
       try {
         this.loading = true;
+        this.error = null;
+
         const params = new URLSearchParams({
           page: this.currentPage.toString(),
           limit: this.itemsPerPage.toString()
@@ -61,7 +63,11 @@ export default {
           params.append('search', this.searchQuery);
         }
 
-        const response = await this.$axios.get(`/items?${params}`);
+        const [response] = await Promise.all([
+          this.$axios.get(`/items?${params}`),
+          new Promise(resolve => setTimeout(resolve, 150))
+        ]);
+
         this.items = response.data.items;
         this.totalPages = response.data.pagination.totalPages;
         this.totalItems = response.data.pagination.totalItems;

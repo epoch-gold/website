@@ -39,7 +39,7 @@ export default {
       item: null,
       auctions: [],
       historicalData: [],
-      loading: false,
+      loading: true,
       error: null,
       currentPage: 1,
       itemsPerPage: 10,
@@ -74,11 +74,14 @@ export default {
   },
   async created() {
     this.loading = true;
+    this.error = null;
+
     try {
       const [itemResponse, auctionsResponse, historicalDataResponse] = await Promise.all([
         this.id ? this.$axios.get(`/items/${this.id}`) : Promise.resolve({ data: null }),
         this.id ? this.$axios.get(`/items/${this.id}/auctions`) : Promise.resolve({ data: [] }),
         this.id ? this.$axios.get(`/items/${this.id}/data`) : Promise.resolve({ data: [] }),
+        new Promise(resolve => setTimeout(resolve, 150))
       ]);
 
       this.item = itemResponse.data;
