@@ -9,7 +9,7 @@
             </div>
         </div>
         <button @click="$emit('go-back')"
-            class="bg-epoch-gray-700 hover:bg-epoch-gold text-white font-bold py-2 px-4 rounded transition-colors flex-shrink-0">
+            class="bg-epoch-gray-700 hover:bg-epoch-gray-600 text-white font-bold py-2 px-4 rounded transition-colors flex-shrink-0">
             Back
         </button>
     </div>

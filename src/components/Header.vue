@@ -1,8 +1,8 @@
 <template>
   <header
-    class="bg-epoch-gray-900 text-white py-4 px-10 flex justify-center md:justify-between items-center relative max-w-7xl mx-auto w-full">
-    <router-link to="/" class="text-3xl font-bold tracking-wider text-epoch-gold hover:opacity-90 transition-opacity">
-      EpochGold
+    class="bg-epoch-gray-900 text-white pt-4 md:pl-6 md:pr-10 flex justify-center md:justify-between items-center relative max-w-7xl mx-auto w-full">
+    <router-link to="/" class="hover:opacity-90 transition-opacity">
+      <img src="../assets/full-logo.webp" alt="EpochGold" class="h-16" />
     </router-link>
 
     <div class="hidden md:flex items-center gap-4">
