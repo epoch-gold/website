@@ -9,20 +9,7 @@
       </div>
 
       <div :class="{ 'opacity-50 pointer-events-none': loading }">
-        <div v-if="displayedItems.length === 0 && !loading" class="text-center py-12">
-          <div class="text-epoch-gray-400 text-lg">
-            <template v-if="searchQuery">
-              No items found matching "{{ searchQuery }}"
-            </template>
-            <template v-else>
-              No items available
-            </template>
-          </div>
-        </div>
-
-        <template v-else>
-          <ItemGrid :items="displayedItems" />
-        </template>
+        <ItemGrid :items="displayedItems" />
       </div>
     </div>
 
@@ -71,29 +58,40 @@ export default {
           this.loading = true;
         }
 
-        const params = new URLSearchParams({
-          page: this.currentPage.toString(),
-          limit: this.itemsPerPage.toString()
+        const data = await this.$store.dispatch('fetchItems', {
+          page: this.currentPage,
+          limit: this.itemsPerPage,
+          search: this.searchQuery,
+          bypassCache: false
         });
 
-        if (this.searchQuery) {
-          params.append('search', this.searchQuery);
-        }
-
-        const [response] = await Promise.all([
-          this.$axios.get(`/items?${params}`),
-          new Promise(resolve => setTimeout(resolve, 150))
-        ]);
-
-        this.items = response.data.items;
-        this.totalPages = response.data.pagination.totalPages;
-        this.totalItems = response.data.pagination.totalItems;
+        this.items = data.items;
+        this.totalPages = data.pagination.totalPages;
+        this.totalItems = data.pagination.totalItems;
       } catch (err) {
         console.error(err);
       } finally {
         if (!isPageChange) {
           this.loading = false;
         }
+      }
+    },
+    async refreshItems() {
+      try {
+        this.loading = true;
+        const data = await this.$store.dispatch('fetchItems', {
+          page: this.currentPage,
+          limit: this.itemsPerPage,
+          search: this.searchQuery,
+          bypassCache: true
+        });
+        this.items = data.items;
+        this.totalPages = data.pagination.totalPages;
+        this.totalItems = data.pagination.totalItems;
+      } catch (err) {
+        console.error('Failed to refresh items:', err);
+      } finally {
+        this.loading = false;
       }
     },
     debouncedSearch() {

@@ -1,5 +1,5 @@
 <template>
-  <div class="p-8">
+  <div class="p-8 pb-16">
     <ItemHeader :item="item" @go-back="goBack" />
 
     <LoadingSpinner v-if="loading" text="Loading item details..." />
@@ -61,16 +61,16 @@ export default {
           this.loading = true;
           this.currentPage = 1;
           try {
-            const [itemResponse, auctionsResponse, historicalDataResponse] = await Promise.all([
-              this.$axios.get(`/items/${newId}`),
-              this.$axios.get(`/items/${newId}/auctions`),
-              this.$axios.get(`/items/${newId}/data`),
+            const [itemData, auctionsData, historicalData] = await Promise.all([
+              this.$store.dispatch('fetchItem', { id: newId }),
+              this.$store.dispatch('fetchItemAuctions', { id: newId }),
+              this.$store.dispatch('fetchItemHistoricalData', { id: newId }),
               new Promise(resolve => setTimeout(resolve, 150))
             ]);
 
-            this.item = itemResponse.data;
-            this.auctions = auctionsResponse.data;
-            this.historicalData = historicalDataResponse.data;
+            this.item = itemData;
+            this.auctions = auctionsData;
+            this.historicalData = historicalData;
 
             if (this.item && this.item.name) {
               document.title = `${this.item.name} - EpochGold`;
@@ -88,6 +88,16 @@ export default {
   methods: {
     goBack() {
       this.$router.push('/');
+    },
+    async refreshAuctions() {
+      try {
+        this.auctions = await this.$store.dispatch('fetchItemAuctions', {
+          id: this.id,
+          bypassCache: true
+        });
+      } catch (err) {
+        console.error('Failed to refresh auctions:', err);
+      }
     },
     sortBy(key) {
       if (this.sortKey === key) {

@@ -25,7 +25,7 @@
                 </a>
             </div>
 
-            <p class="text-center text-epoch-gray-400 text-sm mt-4">
+            <p class="text-center text-epoch-gray-400 text-sm mt-4 pt-6">
                 This website is not an official site supported by the Project Epoch team. Created by Magic.
             </p>
         </div>
