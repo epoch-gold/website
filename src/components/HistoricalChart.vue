@@ -4,9 +4,9 @@
 
 <script>
 import { Line } from 'vue-chartjs';
-import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale } from 'chart.js';
+import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale, Filler } from 'chart.js';
 
-ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale);
+ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale, Filler);
 
 function formatPrice(value) {
     const roundedValue = Math.round(value);
@@ -47,10 +47,10 @@ export default {
                 datasets: [
                     {
                         label: 'Market Price',
-                        backgroundColor: '#ffd700',
+                        backgroundColor: 'rgba(255, 215, 0, 0.1)',
                         borderColor: '#ffd700',
                         data: marketPrices,
-                        fill: false,
+                        fill: true,
                         tension: 0.4,
                     },
                 ],
