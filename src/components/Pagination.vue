@@ -1,15 +1,16 @@
 <template>
     <div class="flex justify-center items-center mt-6" v-if="totalPages > 1">
         <div class="flex rounded overflow-hidden">
-            <button @click="$emit('prev-page')" :disabled="currentPage === 1"
+            <button @click="handlePrevPage" :disabled="currentPage === 1 || disabled"
                 class="bg-epoch-gray-700 hover:bg-epoch-gray-600 text-white font-semibold py-2 px-4 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
                 Prev
             </button>
             <span
-                class="py-2 px-4 bg-epoch-gray-800 text-white text-center text-sm md:text-base font-semibold whitespace-nowrap">
+                class="py-2 px-4 bg-epoch-gray-800 text-white text-center text-md md:text-base font-semibold whitespace-nowrap"
+                :class="{ 'opacity-50': disabled }">
                 Page {{ currentPage }} of {{ totalPages }}
             </span>
-            <button @click="$emit('next-page')" :disabled="currentPage === totalPages"
+            <button @click="handleNextPage" :disabled="currentPage === totalPages || disabled"
                 class="bg-epoch-gray-700 hover:bg-epoch-gray-600 text-white font-semibold py-2 px-4 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
                 Next
             </button>
@@ -28,8 +29,25 @@ export default {
         totalPages: {
             type: Number,
             required: true
+        },
+        disabled: {
+            type: Boolean,
+            default: false
         }
     },
-    emits: ['prev-page', 'next-page']
+    emits: ['prev-page', 'next-page'],
+    methods: {
+        scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        },
+        handlePrevPage() {
+            this.$emit('prev-page');
+            this.scrollToTop();
+        },
+        handleNextPage() {
+            this.$emit('next-page');
+            this.scrollToTop();
+        }
+    }
 }
 </script>

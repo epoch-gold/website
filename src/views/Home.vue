@@ -2,14 +2,34 @@
   <div class="p-8">
     <SearchBar v-model="searchQuery" placeholder="Search for items..." />
 
-    <LoadingSpinner v-if="loading" text="Loading items..." />
+    <div class="relative">
+      <div v-if="loading"
+        class="absolute inset-0 z-10 flex items-center justify-center bg-epoch-gray-900 bg-opacity-75 min-h-[400px]">
+        <LoadingSpinner text="Loading items..." />
+      </div>
 
-    <template v-else>
-      <ItemGrid :items="displayedItems" />
+      <div :class="{ 'opacity-50 pointer-events-none': loading }">
+        <div v-if="displayedItems.length === 0 && !loading" class="text-center py-12">
+          <div class="text-epoch-gray-400 text-lg">
+            <template v-if="searchQuery">
+              No items found matching "{{ searchQuery }}"
+            </template>
+            <template v-else>
+              No items available
+            </template>
+          </div>
+        </div>
 
-      <Pagination v-if="totalItems > 0" :current-page="currentPage" :total-pages="totalPages" @prev-page="prevPage"
-        @next-page="nextPage" />
-    </template>
+        <template v-else>
+          <ItemGrid :items="displayedItems" />
+        </template>
+      </div>
+    </div>
+
+    <div class="mt-6">
+      <Pagination v-if="totalItems > 0 || (totalPages > 1)" :current-page="currentPage" :total-pages="totalPages"
+        :disabled="loading" @prev-page="prevPage" @next-page="nextPage" />
+    </div>
   </div>
 </template>
 
@@ -45,9 +65,11 @@ export default {
     },
   },
   methods: {
-    async loadItems() {
+    async loadItems(isPageChange = false) {
       try {
-        this.loading = true;
+        if (!isPageChange) {
+          this.loading = true;
+        }
 
         const params = new URLSearchParams({
           page: this.currentPage.toString(),
@@ -69,7 +91,9 @@ export default {
       } catch (err) {
         console.error(err);
       } finally {
-        this.loading = false;
+        if (!isPageChange) {
+          this.loading = false;
+        }
       }
     },
     debouncedSearch() {
@@ -79,19 +103,19 @@ export default {
 
       this.searchTimeout = setTimeout(() => {
         this.currentPage = 1;
-        this.loadItems();
+        this.loadItems(false);
       }, 500);
     },
     nextPage() {
       if (this.currentPage < this.totalPages) {
         this.currentPage++;
-        this.loadItems();
+        this.loadItems(true);
       }
     },
     prevPage() {
       if (this.currentPage > 1) {
         this.currentPage--;
-        this.loadItems();
+        this.loadItems(true);
       }
     },
   },
