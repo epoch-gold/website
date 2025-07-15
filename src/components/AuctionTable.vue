@@ -1,6 +1,8 @@
 <template>
     <div>
-        <h2 class="text-xl sm:text-2xl font-semibold mb-4 text-left">Auctions</h2>
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl sm:text-2xl font-semibold text-left">Auctions</h2>
+        </div>
         <div v-if="auctions.length === 0" class="text-left py-8 text-epoch-gray-400">
             <p class="text-lg">No auctions found for this item.</p>
         </div>
