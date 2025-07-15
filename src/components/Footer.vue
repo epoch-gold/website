@@ -26,13 +26,13 @@
             </div>
 
             <p class="text-center text-epoch-gray-400 text-sm mt-4 pt-6">
-                This website is not an official site supported by the Project Epoch team. Created by Magic.
+                This website is not officially supported by the Project Epoch team. Created by Magic.
             </p>
         </div>
 
         <div class="hidden md:block">
             <p class="text-center text-epoch-gray-400 text-base">
-                This website is not an official site supported by the Project Epoch team. Created by Magic.
+                This website is not officially supported by the Project Epoch team. Created by Magic.
             </p>
         </div>
     </footer>
