@@ -33,20 +33,26 @@ export default {
         disabled: {
             type: Boolean,
             default: false
+        },
+        scrollToTop: {
+            type: Boolean,
+            default: true
         }
     },
     emits: ['prev-page', 'next-page'],
     methods: {
-        scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        handleScrollToTop() {
+            if (this.scrollToTop) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         },
         handlePrevPage() {
             this.$emit('prev-page');
-            this.scrollToTop();
+            this.handleScrollToTop();
         },
         handleNextPage() {
             this.$emit('next-page');
-            this.scrollToTop();
+            this.handleScrollToTop();
         }
     }
 }

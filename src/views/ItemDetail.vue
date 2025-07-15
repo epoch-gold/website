@@ -7,7 +7,8 @@
     <div v-else-if="item" class="text-white">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
         <AuctionTable :auctions="auctions" :current-page="currentPage" :items-per-page="itemsPerPage"
-          :sort-key="sortKey" :sort-asc="sortAsc" @sort-by="sortBy" @prev-page="prevPage" @next-page="nextPage" />
+          :sort-key="sortKey" :sort-asc="sortAsc" :scroll-to-top="false" @sort-by="sortBy" @prev-page="prevPage"
+          @next-page="nextPage" />
 
         <HistoricalDataSection :historical-data="historicalData" />
       </div>

@@ -35,7 +35,7 @@
 
             <div class="mt-6">
                 <Pagination v-if="totalPages > 1" :current-page="currentPage" :total-pages="totalPages"
-                    @prev-page="$emit('prev-page')" @next-page="$emit('next-page')" />
+                    :scroll-to-top="scrollToTop" @prev-page="$emit('prev-page')" @next-page="$emit('next-page')" />
             </div>
         </div>
     </div>
@@ -69,6 +69,10 @@ export default {
             default: 'unit_price'
         },
         sortAsc: {
+            type: Boolean,
+            default: true
+        },
+        scrollToTop: {
             type: Boolean,
             default: true
         }
