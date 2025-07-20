@@ -1,5 +1,9 @@
 <template>
   <div class="p-8">
+    <div v-if="lastScanTime" class="mb-6 text-sm text-epoch-gray-400 text-center md:text-left">
+      Last scan: {{ lastScanTime }}
+    </div>
+    
     <SearchBar v-model="searchQuery" placeholder="Search for items..." />
 
     <div class="relative">
@@ -44,11 +48,33 @@ export default {
       totalPages: 1,
       totalItems: 0,
       searchTimeout: null,
+      lastScanTimestamp: null,
     };
   },
   computed: {
     displayedItems() {
       return this.items;
+    },
+    lastScanTime() {
+      if (!this.lastScanTimestamp) return null;
+
+      const now = Date.now();
+      const scanTime = this.lastScanTimestamp * 1000;
+      const diffMs = now - scanTime;
+
+      const minutes = Math.floor(diffMs / (1000 * 60));
+      const hours = Math.floor(diffMs / (1000 * 60 * 60));
+      const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+      if (minutes < 1) {
+        return 'just now';
+      } else if (minutes < 60) {
+        return `${minutes} minute${minutes === 1 ? '' : 's'} ago`;
+      } else if (hours < 24) {
+        return `${hours} hour${hours === 1 ? '' : 's'} ago`;
+      } else {
+        return `${days} day${days === 1 ? '' : 's'} ago`;
+      }
     },
   },
   methods: {
@@ -94,6 +120,14 @@ export default {
         this.loading = false;
       }
     },
+    async loadLatestScan() {
+      try {
+        const data = await this.$store.dispatch('fetchLatestScan');
+        this.lastScanTimestamp = data.timestamp;
+      } catch (err) {
+        console.error('Failed to load latest scan:', err);
+      }
+    },
     debouncedSearch() {
       if (this.searchTimeout) {
         clearTimeout(this.searchTimeout);
@@ -118,7 +152,10 @@ export default {
     },
   },
   async created() {
-    await this.loadItems();
+    await Promise.all([
+      this.loadItems(),
+      this.loadLatestScan()
+    ]);
   },
   beforeUnmount() {
     if (this.searchTimeout) {

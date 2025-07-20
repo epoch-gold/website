@@ -50,6 +50,17 @@ export default createStore({
       );
     },
 
+    async fetchLatestScan(_, { bypassCache = false } = {}) {
+      return await apiService.cachedGet(
+        "/scans/latest",
+        {},
+        {
+          bypassCache,
+          cacheTTL: 30 * 1000,
+        }
+      );
+    },
+
     clearCache(_, pattern = null) {
       apiService.clearCache(pattern);
     },
