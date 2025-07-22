@@ -123,7 +123,7 @@ export default {
     async loadLatestScan() {
       try {
         const data = await this.$store.dispatch('fetchLatestScan');
-        this.lastScanTimestamp = data.timestamp;
+        this.lastScanTimestamp = data.timestamp + 1800;
       } catch (err) {
         console.error('Failed to load latest scan:', err);
       }
