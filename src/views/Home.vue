@@ -61,19 +61,26 @@ export default {
       const now = Date.now();
       const scanTime = this.lastScanTimestamp * 1000;
       const diffMs = now - scanTime;
+      const absDiffMs = Math.abs(diffMs);
 
-      const minutes = Math.floor(diffMs / (1000 * 60));
-      const hours = Math.floor(diffMs / (1000 * 60 * 60));
-      const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      const minutes = Math.floor(absDiffMs / (1000 * 60));
+      const hours = Math.floor(absDiffMs / (1000 * 60 * 60));
+      const days = Math.floor(absDiffMs / (1000 * 60 * 60 * 24));
 
       if (minutes < 1) {
         return 'just now';
       } else if (minutes < 60) {
-        return `${minutes} minute${minutes === 1 ? '' : 's'} ago`;
+        return diffMs < 0
+          ? `in ${minutes} minute${minutes === 1 ? '' : 's'}`
+          : `${minutes} minute${minutes === 1 ? '' : 's'} ago`;
       } else if (hours < 24) {
-        return `${hours} hour${hours === 1 ? '' : 's'} ago`;
+        return diffMs < 0
+          ? `in ${hours} hour${hours === 1 ? '' : 's'}`
+          : `${hours} hour${hours === 1 ? '' : 's'} ago`;
       } else {
-        return `${days} day${days === 1 ? '' : 's'} ago`;
+        return diffMs < 0
+          ? `in ${days} day${days === 1 ? '' : 's'}`
+          : `${days} day${days === 1 ? '' : 's'} ago`;
       }
     },
   },
@@ -88,7 +95,7 @@ export default {
           page: this.currentPage,
           limit: this.itemsPerPage,
           search: this.searchQuery,
-          bypassCache: false
+          bypassCache: false,
         });
 
         this.items = data.items;
@@ -109,7 +116,7 @@ export default {
           page: this.currentPage,
           limit: this.itemsPerPage,
           search: this.searchQuery,
-          bypassCache: true
+          bypassCache: true,
         });
         this.items = data.items;
         this.totalPages = data.pagination.totalPages;
@@ -123,9 +130,15 @@ export default {
     async loadLatestScan() {
       try {
         const data = await this.$store.dispatch('fetchLatestScan');
-        this.lastScanTimestamp = data.timestamp + 1800;
+        const timestamp = Number(data?.timestamp);
+        if (data && typeof timestamp === 'number' && !isNaN(timestamp)) {
+          this.lastScanTimestamp = timestamp + 1800;
+        } else {
+          this.lastScanTimestamp = null;
+        }
       } catch (err) {
         console.error('Failed to load latest scan:', err);
+        this.lastScanTimestamp = null;
       }
     },
     debouncedSearch() {
@@ -152,10 +165,7 @@ export default {
     },
   },
   async created() {
-    await Promise.all([
-      this.loadItems(),
-      this.loadLatestScan()
-    ]);
+    await Promise.all([this.loadItems(), this.loadLatestScan()]);
   },
   beforeUnmount() {
     if (this.searchTimeout) {
