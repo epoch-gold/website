@@ -4,5 +4,8 @@ User-agent: *
 # Allow public pages
 Allow: /
 
+# Block items
+Disallow: /item/
+
 # Point to sitemap
 Sitemap: https://www.epochgold.com/sitemap.xml
